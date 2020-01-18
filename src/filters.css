@@ -1,0 +1,12 @@
+.filter-container{
+
+}
+
+.filter{
+    border: 1px solid #333;
+}
+
+.filter > ul {
+    list-style-type: none;
+    text-align: left;
+}
