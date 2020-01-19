@@ -4,6 +4,7 @@
     grid-template-areas: 'character character character character';
     column-count: 4;
     column-gap: 10px;
+    height: 100%;
   }
   .grid-item {
     background-color: #333;
@@ -25,6 +26,7 @@
 
 .item5{
     grid-area: main;
+    height: 98%;
 }
 
 .item15 { 
@@ -92,7 +94,7 @@ sub{
     'search search'
     'filter main';
   grid-template-columns: 20% 80%;
-  grid-gap: 10px;
+  /* grid-gap: 10px; */
 }
 
 @media (min-width){
