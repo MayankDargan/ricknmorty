@@ -26,9 +26,13 @@ const defaultRequestOptions = {
   export function getAllCharacters(options = defaultRequestOptions) {
     return get("/character/?page=1", options);
   }
+
+  export function getMoreCharacters(id,options = defaultRequestOptions) {
+    return get(`/character/?page=${id}`, options);
+  }
   
   export function getCharactersByName(name, options = defaultRequestOptions) {
-    return get(`/character/?name=${encodeURIComponent(name)}`, options);
+    return get(`/character/?${name}`, options);
   }
   
   export function getCharacterById(id, options = defaultRequestOptions) {

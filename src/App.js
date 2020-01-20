@@ -1,8 +1,7 @@
 import React from 'react';
 import './App.css';
 import Character from './character';
-import Filters from './filters';
-import {getCharactersByName} from './lib/api'; 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -17,10 +16,7 @@ class App extends React.Component {
         <header className="App-header item1">
           <h3>Rick and Morty</h3>
         </header>
-        <Character className="item-3"></Character>
-        {/* <div className="item3">Search</div>  
-        <div className="item4">Filter</div> */}
-        
+        <Character className="item-3"></Character>        
       </div>
     );
   }
