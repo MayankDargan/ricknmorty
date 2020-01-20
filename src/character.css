@@ -97,6 +97,20 @@ sub{
   /* grid-gap: 10px; */
 }
 
+.search-input{
+    width: 30%;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
+.sort-by{
+    float: right;
+    height: 30px;
+    width: 10%;
+    font-size: medium;
+    margin-top: 1%;
+}
+
 @media (min-width){
     .grid-inner-container{
         break-inside: avoid;

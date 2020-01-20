@@ -32,7 +32,7 @@ const defaultRequestOptions = {
   }
   
   export function getCharactersByName(name, options = defaultRequestOptions) {
-    return get(`/character/?name=${encodeURIComponent(name)}`, options);
+    return get(`/character/?${name}`, options);
   }
   
   export function getCharacterById(id, options = defaultRequestOptions) {

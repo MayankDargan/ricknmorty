@@ -11,13 +11,13 @@ class Filters extends React.Component{
 
         if(this.props.species !== undefined){
             this.props.species.map((specie)=>{
-                speciesElements.push(<li key={specie}><input type="checkbox" onClick={(e)=>this.props.clause(e)} value={specie} />{specie}</li>);
+                speciesElements.push(<li key={specie}><input type="checkbox" className="regular-checkbox" onClick={(e)=>this.props.clause(e)} value={specie} />{specie}</li>);
             });
             this.props.gender.map((gender)=>{
-                genderElements.push(<li key={gender}><input type="checkbox" onClick={(e)=>this.props.clause(e)} value={gender} />{gender}</li>);
+                genderElements.push(<li key={gender}><input type="checkbox" className="regular-checkbox" onClick={(e)=>this.props.clause(e)} value={gender} />{gender}</li>);
             });
             this.props.origin.map((origin)=>{
-                originElements.push(<li key={origin}><input type="checkbox" onClick={(e)=>this.props.clause(e)} value={origin} />{origin}</li>)
+                originElements.push(<li key={origin}><input type="checkbox" className="regular-checkbox" onClick={(e)=>this.props.clause(e)} value={origin} />{origin}</li>)
             })
         }
         return(

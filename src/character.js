@@ -11,7 +11,7 @@ class Character extends React.Component{
             results: this.props.characters,
             notFound: false,
             isLoading: false,
-            filters: [],
+            filters: '',
             orderBy: "asc",
             page: 1
         }
@@ -70,7 +70,20 @@ class Character extends React.Component{
 
     }
     searchCharacter(characterName){
-        getCharactersByName(characterName.currentTarget.value)
+        let filterCriteria = this.state.filters;
+        if(filterCriteria !== ''){
+            if(filterCriteria.indexOf('name') !== -1){
+                filterCriteria = `name= ${characterName.target.value}`;
+            } else{
+                filterCriteria = filterCriteria + `&name=${characterName.target.value}`
+            }
+        } else{
+            filterCriteria = `name=${characterName.target.value}`;
+        }
+        this.setState({
+            filters: filterCriteria
+        });
+        getCharactersByName(filterCriteria)
         .then((result)=>{
             // this.props.characters = result.results;
             this.setState({
@@ -83,43 +96,36 @@ class Character extends React.Component{
     }
     onFilterSelect(event){
         let filterValue = event.target.value;
+        let filterCriteria = this.state.filters;
         let filteredCharacters =[];
-        let criterias = this.state.filters;
-        if(criterias.includes(filterValue)){
-            criterias = _.remove(criterias, function(criteria){
-                return criteria !== filterValue;
-            });
+        if(filterCriteria.indexOf(filterValue) !== -1){
+            if(this.state.gender.includes(filterValue)){
+                filterCriteria = filterCriteria.replace(`&gender=${filterValue}`,'');
+            } else if(this.state.origin.includes(filterValue)){
+                filterCriteria = filterCriteria.replace(`&origin=${filterValue}`,'');
+            } else if(this.state.species.includes(filterValue)){
+                filterCriteria = filterCriteria.replace(`&species=${filterValue}`,'');
+            }
         } else {
-            criterias.push(filterValue);
-            this.state.results.map((character) => {
-                if(_.values(character).includes(filterValue) || character.origin.name === filterValue){
-                    filteredCharacters.push(character);
-                }
-            });
-            
+            if(this.state.gender.includes(filterValue)){
+                filterCriteria = filterCriteria + `&gender=${filterValue}`;
+            } else if(this.state.origin.includes(filterValue)){
+                filterCriteria = filterCriteria + `&origin=${filterValue}`;
+            } else if(this.state.species.includes(filterValue)){
+                filterCriteria = filterCriteria + `&species=${filterValue}`;
+            }
         }
-        
-        if(criterias.length !==0){
+        getCharactersByName(filterCriteria)
+        .then((result)=>{
             this.setState({
-                results: filteredCharacters,
-                filters: criterias
+                results: result.results,
+                isLoading: true,
+                filters: filterCriteria
             });
-        } else {
-            getAllCharacters()
-            .then((result)=>{
-                this.setState({
-                    results: result.results, 
-                    gender: _.uniq(_.map(result.results,'gender')),
-                    species: _.uniq(_.map(result.results,'species')),
-                    origin: _.uniq(_.map(_.map(result.results,'origin'),'name')),
-                    isLoading: true,
-                    filters: []
-                });
-            }).catch((error) => {
-                console.log(error);
-                this.setState({ notFound: true, results: [], isLoading: false })
-            });
-        }
+        }).catch((error) => {
+            console.log(error);
+            this.setState({ notFound: true, results: [], isLoading: false })
+        });
         
     }
     sortAscending(a,b){
@@ -205,9 +211,8 @@ class Character extends React.Component{
         return(
             <div className="grid-characters">
                 <div className="item2">
-                    Search
-                    <input type="text" onKeyPress={(e)=>{this.searchCharacter(e)}} />
-                    <select onChange={(e)=>{this.sortCharacters(e)}} value={this.state.orderBy}>
+                    <input type="text" className="search-input" placeholder="Search character by name" onKeyPress={(e)=>{this.searchCharacter(e)}} />
+                    <select onChange={(e)=>{this.sortCharacters(e)}} className="sort-by" value={this.state.orderBy}>
                         <option>Sort by ID</option>
                         <option value="asc">Ascending</option>
                         <option value="desc">Descending</option>
