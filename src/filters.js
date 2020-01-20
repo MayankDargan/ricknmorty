@@ -16,9 +16,6 @@ class Filters extends React.Component{
             this.props.gender.map((gender)=>{
                 genderElements.push(<li key={gender}><input type="checkbox" className="regular-checkbox" onClick={(e)=>this.props.clause(e)} value={gender} />{gender}</li>);
             });
-            this.props.origin.map((origin)=>{
-                originElements.push(<li key={origin}><input type="checkbox" className="regular-checkbox" onClick={(e)=>this.props.clause(e)} value={origin} />{origin}</li>)
-            })
         }
         return(
             <div className="filter-container">
@@ -32,12 +29,6 @@ class Filters extends React.Component{
                     <h5>Gender</h5>
                     <ul>
                         {genderElements}
-                    </ul>
-                </div>
-                <div className="filter">
-                    <h5>Origin</h5>
-                    <ul>
-                        {originElements}
                     </ul>
                 </div>
             </div>

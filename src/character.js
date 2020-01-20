@@ -13,7 +13,8 @@ class Character extends React.Component{
             isLoading: false,
             filters: '',
             orderBy: "asc",
-            page: 1
+            page: 1,
+            conditions: []
         }
         this.sortCharacters = this.sortCharacters.bind(this);
         this.handleScroll = _.debounce(this.handleScroll.bind(this),2000);
@@ -28,7 +29,6 @@ class Character extends React.Component{
                 results: result.results, 
                 gender: _.uniq(_.map(result.results,'gender')),
                 species: _.uniq(_.map(result.results,'species')),
-                origin: _.uniq(_.map(_.map(result.results,'origin'),'name')),
                 isLoading: true
             });
           }).catch((error) => {
@@ -97,24 +97,35 @@ class Character extends React.Component{
     onFilterSelect(event){
         let filterValue = event.target.value;
         let filterCriteria = this.state.filters;
-        let filteredCharacters =[];
+        let filters = this.state.conditions;
         if(filterCriteria.indexOf(filterValue) !== -1){
             if(this.state.gender.includes(filterValue)){
                 filterCriteria = filterCriteria.replace(`&gender=${filterValue}`,'');
-            } else if(this.state.origin.includes(filterValue)){
-                filterCriteria = filterCriteria.replace(`&origin=${filterValue}`,'');
             } else if(this.state.species.includes(filterValue)){
                 filterCriteria = filterCriteria.replace(`&species=${filterValue}`,'');
             }
         } else {
             if(this.state.gender.includes(filterValue)){
                 filterCriteria = filterCriteria + `&gender=${filterValue}`;
-            } else if(this.state.origin.includes(filterValue)){
-                filterCriteria = filterCriteria + `&origin=${filterValue}`;
             } else if(this.state.species.includes(filterValue)){
                 filterCriteria = filterCriteria + `&species=${filterValue}`;
             }
         }
+        if(!filters.includes(filterValue)){
+            filters.push(filterValue);
+            this.setState({
+                conditions: filters
+            });
+        } else {
+            filters = _.remove(filters, function(filter){
+                return filter !== filterValue;
+            });
+
+            this.setState({
+                conditions: filters
+            });
+        }
+
         getCharactersByName(filterCriteria)
         .then((result)=>{
             this.setState({
@@ -171,17 +182,38 @@ class Character extends React.Component{
         }
         
     }
+
+    timeDifference(current, previous) {
+
+        var msPerMinute = 60 * 1000;
+        var msPerHour = msPerMinute * 60;
+        var msPerDay = msPerHour * 24;
+        var msPerMonth = msPerDay * 30;
+        var msPerYear = msPerDay * 365;
+    
+        var elapsed = current - previous;
+    
+        if (elapsed < msPerYear) {
+            return 'created ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+        }
+    
+        else {
+            return 'created ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+        }
+    }
+
     render(){
         const { isLoading, results, notFound } = this.state;
-        let characters = [];
+        let characters = [], filterConditions = [];
         if(isLoading || notFound){
             this.state.results.map(character =>{
                 // eslint-disable-next-line no-unused-expressions
+                let createdDate = this.timeDifference(new Date(),new Date(character.created.split('T')[0]))
                 characters.push(
                 <div key={character.id} className="grid-item item-15">
                         <img src={character.image} alt={character.name} />
                         <p>{character.name}
-                            <sub>id:{character.id} | created: {character.created}</sub>
+                            <sub>id:{character.id} - {createdDate}</sub>
                         </p>
                         <ul className="characterstics">
                             <li>
@@ -208,9 +240,15 @@ class Character extends React.Component{
                 </div>);
             });
         }
+        this.state.conditions.map((filter)=>{
+            filterConditions.push(<li><a href="#" className="tag">{filter}</a></li>)
+        });
         return(
             <div className="grid-characters">
                 <div className="item2">
+                    <ul className="tags">
+                        {filterConditions}
+                    </ul>
                     <input type="text" className="search-input" placeholder="Search character by name" onKeyPress={(e)=>{this.searchCharacter(e)}} />
                     <select onChange={(e)=>{this.sortCharacters(e)}} className="sort-by" value={this.state.orderBy}>
                         <option>Sort by ID</option>

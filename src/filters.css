@@ -34,3 +34,14 @@
 	left: 3px;
 	color: #99a1a7;
 }
+
+@media (max-width: 767px){
+    .filter-container{
+        margin: 2%;
+        width: 90%;
+    }
+
+    .filter > h5{
+        margin: 0;
+    }
+}
